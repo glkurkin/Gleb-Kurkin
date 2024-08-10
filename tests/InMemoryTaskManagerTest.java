@@ -50,4 +50,18 @@ public class InMemoryTaskManagerTest {
         taskManager.deleteTask(task.getId());
         Assertions.assertNull(taskManager.getTaskById(task.getId()));
     }
+
+    @Test
+    public void testGetHistory() {
+        Task task1 = taskManager.createTask("Задача 1", "Описание задачи 1");
+        Task task2 = taskManager.createTask("Задача 2", "Описание задачи 2");
+
+        taskManager.getTaskById(task1.getId());
+        taskManager.getTaskById(task2.getId());
+
+        List<Task> history = taskManager.getHistory();
+        Assertions.assertEquals(2, history.size());
+        Assertions.assertEquals(task1, history.get(0));
+        Assertions.assertEquals(task2, history.get(1));
+    }
 }

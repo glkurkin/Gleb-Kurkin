@@ -64,23 +64,17 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public boolean deleteTask(int id) {
-        if (tasks.remove(id) != null) {
+        if (tasks.containsKey(id)) {
+            historyManager.remove(id);
+            tasks.remove(id);
             return true;
-        }
-        Epic epic = epics.remove(id);
-        if (epic != null) {
-            for (int subtaskId : epic.getSubtaskIds()) {
-                subtasks.remove(subtaskId);
-            }
+        } else if (epics.containsKey(id)) {
+            historyManager.remove(id);
+            epics.remove(id);
             return true;
-        }
-        Subtask subtask = subtasks.remove(id);
-        if (subtask != null) {
-            Epic parentEpic = epics.get(subtask.getEpicId());
-            if (parentEpic != null) {
-                parentEpic.removeSubtask(id);
-                updateEpicStatus(parentEpic.getId());
-            }
+        } else if (subtasks.containsKey(id)) {
+            historyManager.remove(id);
+            subtasks.remove(id);
             return true;
         }
         return false;
@@ -186,5 +180,6 @@ public class InMemoryTaskManager implements TaskManager {
             }
         }
     }
+
 }
 
