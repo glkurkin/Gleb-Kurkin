@@ -30,7 +30,7 @@ public class InMemoryHistoryManagerTest {
     @Test
     public void testGetHistory() {
         Task task1 = new Task(1, "Задача 1", "Описание задачи 1", TaskStatus.NEW);
-        Task task2 = new Task(2, "Задача 2", "Описание задачи 2", TaskStatus.NEW);
+        Task task2 = new Task(2, "Задача 2", "Описание задачаи 2", TaskStatus.NEW);
         Task task3 = new Task(3, "Задача 3", "Описание задачи 3", TaskStatus.NEW);
         historyManager.add(task1);
         historyManager.add(task2);
