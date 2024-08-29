@@ -1,4 +1,9 @@
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -19,9 +24,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String taskToString(Task task) {
+        TaskType type = task instanceof Epic ? TaskType.EPIC :
+                task instanceof Subtask ? TaskType.SUBTASK :
+                        TaskType.TASK;
         return String.format("%d,%s,%s,%s,%s,%s\n",
                 task.getId(),
-                task.getClass().getSimpleName(),
+                type,
                 task.getName(),
                 task.getStatus(),
                 task.getDescription(),
@@ -54,16 +62,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static Task fromString(String value) {
         String[] parts = value.split(",");
         int id = Integer.parseInt(parts[0]);
-        String type = parts[1];
+        TaskType type = TaskType.valueOf(parts[1]);
         String name = parts[2];
         TaskStatus status = TaskStatus.valueOf(parts[3]);
         String description = parts[4];
+
         switch (type) {
-            case "Task":
+            case TASK:
                 return new Task(id, name, description, status);
-            case "Epic":
+            case EPIC:
                 return new Epic(id, name, description);
-            case "Subtask":
+            case SUBTASK:
                 int epicId = Integer.parseInt(parts[5]);
                 return new Subtask(id, name, description, status, epicId);
             default:
@@ -71,6 +80,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    @Override
+    public Task createTask(String name, String description) {
+        Task task = super.createTask(name, description);
+        save();
+        return task;
+    }
+
+    @Override
+    public Epic createEpic(String name, String description) {
+        Epic epic = super.createEpic(name, description);
+        save();
+        return epic;
+    }
+
+    @Override
+    public Subtask createSubtask(String name, String description, int epicId) {
+        Subtask subtask = super.createSubtask(name, description, epicId);
+        save();
+        return subtask;
+    }
     @Override
     public void addTask(Task task) {
         super.addTask(task);

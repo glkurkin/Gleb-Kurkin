@@ -1,2 +1,2 @@
-package PACKAGE_NAME;public class TaskType {
+package PACKAGE_NAME;public enum TaskType {
 }
