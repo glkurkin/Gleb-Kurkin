@@ -11,9 +11,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
-    
+
 private static final String FILE_HEADER = "id,type,name,status,description,epic\n";
-    
+
 protected void save() {
         try (Writer writer = new FileWriter(file)) {
             writer.write(FILE_HEADER);
@@ -100,9 +100,10 @@ protected void save() {
     public Subtask createSubtask(String name, String description, int epicId) {
         Subtask subtask = super.createSubtask(name, description, epicId);
         save();
-        
+    
         return subtask;
     }
+
     @Override
     public void addTask(Task task) {
         super.addTask(task);
