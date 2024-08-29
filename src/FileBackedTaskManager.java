@@ -19,7 +19,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(taskToString(task));
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка сохранения в файл", e);
+            throw new FileSaveException("Ошибка сохранения в файл", e);
         }
     }
 
@@ -53,7 +53,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки из файла", e);
+            throw new FileLoadException("Ошибка загрузки из файла", e);
         }
         return manager;
     }
@@ -107,15 +107,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task updateTask(int id, String name, String description) {
-        Task updatedTask = super.updateTask(id, name, description);
+    public Task updateTask(int taskId, String name, String description) {
+        Task updatedTask = super.updateTask(taskId, name, description);
         save();
         return updatedTask;
     }
 
     @Override
-    public boolean deleteTask(int id) {
-        boolean deleted = super.deleteTask(id);
+    public boolean deleteTask(int taskId) {
+        boolean deleted = super.deleteTask(taskId);
         save();
         return deleted;
     }
