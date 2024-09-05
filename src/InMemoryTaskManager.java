@@ -13,7 +13,6 @@ public class InMemoryTaskManager implements TaskManager {
     protected Map<Integer, Subtask> subtasks;
     private int id;
     private HistoryManager historyManager;
-    // TreeSet для хранения задач по приоритету (startTime)
     private TreeSet<Task> prioritizedTasks;
 
     public InMemoryTaskManager() {
@@ -25,12 +24,32 @@ public class InMemoryTaskManager implements TaskManager {
         this.prioritizedTasks = new TreeSet<>(new TaskStartTimeComparator());
     }
 
+    public boolean isOverlapping(Task task1, Task task2) {
+        LocalDateTime start1 = task1.getStartTime();
+        LocalDateTime end1 = task1.getEndTime();
+        LocalDateTime start2 = task2.getStartTime();
+        LocalDateTime end2 = task2.getEndTime();
+
+        if (start1 == null || end1 == null || start2 == null || end2 == null) {
+            return false;
+        }
+
+        return !(end1.isBefore(start2) || end2.isBefore(start1));
+    }
+
     @Override
     public Task createTask(String name, String description) {
         int id = this.id++;
         Task task = new Task(id, name, description, TaskStatus.NEW, Duration.ZERO, null);
+
+        for (Task existingTask : prioritizedTasks) {
+            if (isOverlapping(task, existingTask)) {
+                throw new IllegalArgumentException("Задачи пересекаются по времени выполнения");
+            }
+        }
+
         tasks.put(id, task);
-        prioritizedTasks.add(task); // Добавляем в отсортированный список
+        prioritizedTasks.add(task);
         return task;
     }
 
@@ -47,7 +66,7 @@ public class InMemoryTaskManager implements TaskManager {
         int id = this.id++;
         Subtask subtask = new Subtask(id, name, description, TaskStatus.NEW, Duration.ZERO, null, epicId);
         subtasks.put(id, subtask);
-        prioritizedTasks.add(subtask); // Добавляем в отсортированный список
+        prioritizedTasks.add(subtask);
         Epic epic = epics.get(epicId);
         if (epic != null) {
             epic.addSubtask(id);
@@ -60,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task updateTask(int id, String name, String description) {
         Task task = getTaskById(id);
         if (task != null) {
-            prioritizedTasks.remove(task); // Удаляем старую версию задачи
+            prioritizedTasks.remove(task);
             task.setName(name);
             task.setDescription(description);
             if (task instanceof Epic) {
@@ -68,7 +87,14 @@ public class InMemoryTaskManager implements TaskManager {
             } else if (task instanceof Subtask) {
                 updateEpicStatus(((Subtask) task).getEpicId());
             }
-            prioritizedTasks.add(task); // Добавляем обновлённую версию задачи
+
+            for (Task existingTask : prioritizedTasks) {
+                if (isOverlapping(task, existingTask)) {
+                    throw new IllegalArgumentException("Задачи пересекаются по времени выполнения");
+                }
+            }
+
+            prioritizedTasks.add(task);
         }
         return task;
     }
@@ -77,7 +103,7 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean deleteTask(int id) {
         Task task = getTaskById(id);
         if (task != null) {
-            prioritizedTasks.remove(task); // Удаляем задачу из отсортированного списка
+            prioritizedTasks.remove(task);
             tasks.remove(id);
             return true;
         }
@@ -102,7 +128,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteAllTasks() {
         tasks.clear();
-        prioritizedTasks.clear(); // Очищаем отсортированный список задач
+        prioritizedTasks.clear();
     }
 
     @Override
@@ -132,15 +158,13 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    // Добавляем задачу в отсортированный список и карту задач
     public void addTask(Task task) {
         tasks.put(task.getId(), task);
         prioritizedTasks.add(task);
     }
 
-    // Метод для получения отсортированного списка задач
     public TreeSet<Task> getPrioritizedTasks() {
-        return new TreeSet<>(prioritizedTasks); // Возвращаем копию отсортированного списка
+        return new TreeSet<>(prioritizedTasks);
     }
 
     public void printAllTasks() {
