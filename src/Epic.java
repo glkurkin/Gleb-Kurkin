@@ -1,11 +1,14 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private List<Integer> subtaskIds;
+    private LocalDateTime endTime;
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, TaskStatus.NEW);
+        super(id, name, description, TaskStatus.NEW, Duration.ZERO, null); // Duration и startTime будут вычисляться
         this.subtaskIds = new ArrayList<>();
     }
 
@@ -50,6 +53,47 @@ public class Epic extends Task {
         } else {
             setStatus(TaskStatus.NEW);
         }
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void updateTiming(List<Subtask> subtasks) {
+        if (subtasks.isEmpty()) {
+            setDuration(Duration.ZERO);
+            setStartTime(null);
+            endTime = null;
+            return;
+        }
+
+        LocalDateTime earliestStartTime = null;
+        LocalDateTime latestEndTime = null;
+        Duration totalDuration = Duration.ZERO;
+
+        for (Subtask subtask : subtasks) {
+            LocalDateTime subtaskStartTime = subtask.getStartTime();
+            LocalDateTime subtaskEndTime = subtask.getEndTime();
+            Duration subtaskDuration = subtask.getDuration();
+
+            if (subtaskStartTime != null) {
+                if (earliestStartTime == null || subtaskStartTime.isBefore(earliestStartTime)) {
+                    earliestStartTime = subtaskStartTime;
+                }
+                if (subtaskEndTime != null && (latestEndTime == null || subtaskEndTime.isAfter(latestEndTime))) {
+                    latestEndTime = subtaskEndTime;
+                }
+            }
+
+            if (subtaskDuration != null) {
+                totalDuration = totalDuration.plus(subtaskDuration);
+            }
+        }
+
+        setDuration(totalDuration);
+        setStartTime(earliestStartTime);
+        endTime = latestEndTime;
     }
 
     @Override
