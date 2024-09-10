@@ -167,7 +167,7 @@ public class Main {
 
     private static void runTests() {
         System.out.println("Запуск теста...");
-
+        
         taskManager.createTask("Задача 1", "Описание задачи 1", Duration.ofMinutes(30), LocalDateTime.now());
         taskManager.createTask("Задача 2", "Описание задачи 2", Duration.ofMinutes(30), LocalDateTime.now());
 
