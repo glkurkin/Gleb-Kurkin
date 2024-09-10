@@ -8,7 +8,7 @@ public class Epic extends Task {
     private LocalDateTime endTime;
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, TaskStatus.NEW, Duration.ZERO, null); // Duration и startTime будут вычисляться
+        super(id, name, description, TaskStatus.NEW, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(15));
         this.subtaskIds = new ArrayList<>();
     }
 
@@ -32,6 +32,7 @@ public class Epic extends Task {
 
         boolean allDone = true;
         boolean anyInProgress = false;
+        boolean anyNew = false;
 
         for (int subtaskId : subtaskIds) {
             for (Subtask subtask : subtasks) {
@@ -42,13 +43,16 @@ public class Epic extends Task {
                     if (subtask.getStatus() == TaskStatus.IN_PROGRESS) {
                         anyInProgress = true;
                     }
+                    if (subtask.getStatus() == TaskStatus.NEW) {
+                        anyNew = true;
+                    }
                 }
             }
         }
 
         if (allDone) {
             setStatus(TaskStatus.DONE);
-        } else if (anyInProgress) {
+        } else if (anyInProgress || (anyNew && !allDone)) {
             setStatus(TaskStatus.IN_PROGRESS);
         } else {
             setStatus(TaskStatus.NEW);
