@@ -207,4 +207,3 @@ public class Main {
 
         System.out.println("Тест завершен.");
     }
-}
