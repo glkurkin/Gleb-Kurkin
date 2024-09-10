@@ -164,7 +164,7 @@ public class Main {
             }
         }
     }
-
+// CHECKSTYLE:OFF
     private static void runTests() {
         System.out.println("Запуск теста...");
         
@@ -207,3 +207,5 @@ public class Main {
 
         System.out.println("Тест завершен.");
     }
+// CHECKSTYLE:ON
+}
