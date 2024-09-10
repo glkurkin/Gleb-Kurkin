@@ -8,7 +8,7 @@ public class Epic extends Task {
     private LocalDateTime endTime;
 
     public Epic(int id, String name, String description) {
-        super(id, name, description, TaskStatus.NEW, Duration.ZERO, null); // Duration и startTime будут вычисляться
+        super(id, name, description, TaskStatus.NEW, Duration.ZERO, null);
         this.subtaskIds = new ArrayList<>();
     }
 
