@@ -38,9 +38,9 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(String name, String description) {
+    public Task createTask(String name, String description, Duration duration, LocalDateTime now) {
         int id = this.id++;
-        Task task = new Task(id, name, description, TaskStatus.NEW, Duration.ZERO, null);
+        Task task = new Task(id, name, description, TaskStatus.NEW, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(15));
 
         for (Task existingTask : prioritizedTasks) {
             if (isOverlapping(task, existingTask)) {
@@ -63,20 +63,34 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask createSubtask(String name, String description, int epicId) {
+        return null;
+    }
+
+    public Subtask createSubtask(String name, String description, int epicId, Duration duration, LocalDateTime startTime) {
         int id = this.id++;
-        Subtask subtask = new Subtask(id, name, description, TaskStatus.NEW, Duration.ZERO, null, epicId);
+        Subtask subtask = new Subtask(id, name, description, TaskStatus.NEW, epicId, duration, startTime);
+
+        for (Task existingTask : prioritizedTasks) {
+            if (isOverlapping(subtask, existingTask)) {
+                throw new IllegalArgumentException("Задачи пересекаются по времени выполнения");
+            }
+        }
+
         subtasks.put(id, subtask);
         prioritizedTasks.add(subtask);
         Epic epic = epics.get(epicId);
-        if (epic != null) {
-            epic.addSubtask(id);
-            updateEpicStatus(epicId);
+        if (epic == null) {
+            throw new IllegalArgumentException("Эпик с id " + epicId + " не найден.");
         }
+        epic.addSubtask(id);
+        updateEpicStatus(epicId);
+
         return subtask;
     }
 
+
     @Override
-    public Task updateTask(int id, String name, String description) {
+    public Task updateTask(int id, String name, String description, TaskStatus done) {
         Task task = getTaskById(id);
         if (task != null) {
             prioritizedTasks.remove(task);
@@ -200,4 +214,3 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 }
-
