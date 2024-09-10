@@ -1,3 +1,5 @@
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
@@ -73,7 +75,7 @@ public class Main {
         String name = scanner.nextLine();
         System.out.print("Введите описание задачи: ");
         String description = scanner.nextLine();
-        Task task = taskManager.createTask(name, description);
+        Task task = taskManager.createTask(name, description, Duration.ofMinutes(30), LocalDateTime.now());
         System.out.println("Задача создана: " + task.getId());
     }
 
@@ -132,7 +134,7 @@ public class Main {
         String name = scanner.nextLine();
         System.out.print("Введите новое описание задачи: ");
         String description = scanner.nextLine();
-        taskManager.updateTask(id, name, description);
+        taskManager.updateTask(id, name, description, TaskStatus.DONE);
         System.out.println("Задача обновлена.");
     }
 
@@ -166,8 +168,8 @@ public class Main {
     private static void runTests() {
         System.out.println("Запуск теста...");
 
-        taskManager.createTask("Задача 1", "Описание задачи 1");
-        taskManager.createTask("Задача 2", "Описание задачи 2");
+        taskManager.createTask("Задача 1", "Описание задачи 1", Duration.ofMinutes(30), LocalDateTime.now());
+        taskManager.createTask("Задача 2", "Описание задачи 2", Duration.ofMinutes(30), LocalDateTime.now());
 
         taskManager.createEpic("Эпик 1", "Описание эпика 1");
         taskManager.createEpic("Эпик 2", "Описание эпика 2");
@@ -189,10 +191,10 @@ public class Main {
         System.out.println("\nИстория после просмотра задач 1, 2, 3:");
         printHistory();
 
-        taskManager.updateTask(1, "Задача 1 обновлена", "Описание задачи 1 обновлено");
+        taskManager.updateTask(1, "Задача 1 обновлена", "Описание задачи 1 обновлено", TaskStatus.DONE);
 
-        taskManager.updateTask(3, "Подзадача 1 обновлена", "Описание подзадачи 1 обновлено");
-        taskManager.updateTask(4, "Подзадача 2 обновлена", "Описание подзадачи 2 обновлено");
+        taskManager.updateTask(3, "Подзадача 1 обновлена", "Описание подзадачи 1 обновлено", TaskStatus.DONE);
+        taskManager.updateTask(4, "Подзадача 2 обновлена", "Описание подзадачи 2 обновлено", TaskStatus.DONE);
 
         System.out.println("\nЭпики и их статусы после обновления подзадач:");
         printAllEpics();
@@ -206,4 +208,3 @@ public class Main {
         System.out.println("Тест завершен.");
     }
 }
-
