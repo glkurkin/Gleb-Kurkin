@@ -4,6 +4,8 @@ import java.io.Writer;
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
@@ -11,7 +13,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
+
     private static final String FILE_HEADER = "id,type,name,status,description,epic\n";
+
     protected void save() {
         try (Writer writer = new FileWriter(file)) {
             writer.write(FILE_HEADER);
@@ -66,23 +70,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         String name = parts[2];
         TaskStatus status = TaskStatus.valueOf(parts[3]);
         String description = parts[4];
+        Duration duration = Duration.ofMinutes(Long.parseLong(parts[5]));
+        LocalDateTime startTime = LocalDateTime.parse(parts[6]);
 
         switch (type) {
             case TASK:
-                return new Task(id, name, description, status);
+                return new Task(id, name, description, status, duration, startTime);
             case EPIC:
                 return new Epic(id, name, description);
             case SUBTASK:
-                int epicId = Integer.parseInt(parts[5]);
-                return new Subtask(id, name, description, status, epicId);
+                int epicId = Integer.parseInt(parts[7]);
+                return new Subtask(id, name, description, status, epicId, duration, startTime);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }
     }
 
     @Override
-    public Task createTask(String name, String description) {
-        Task task = super.createTask(name, description);
+    public Task createTask(String name, String description, Duration duration, LocalDateTime now) {
+        Task task = super.createTask(name, description, duration, now);
         save();
         return task;
     }
@@ -100,6 +106,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         save();
         return subtask;
     }
+
     @Override
     public void addTask(Task task) {
         super.addTask(task);
@@ -107,8 +114,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task updateTask(int taskId, String name, String description) {
-        Task updatedTask = super.updateTask(taskId, name, description);
+    public Task updateTask(int taskId, String name, String description, TaskStatus done) {
+        Task updatedTask = super.updateTask(taskId, name, description, done);
         save();
         return updatedTask;
     }
