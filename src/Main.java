@@ -95,7 +95,7 @@ public class Main {
         String name = scanner.nextLine();
         System.out.print("Введите описание подзадачи: ");
         String description = scanner.nextLine();
-        Subtask subtask = taskManager.createSubtask(name, description, epicId);
+        Subtask subtask = taskManager.createSubtask(name, description, epicId, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(10));
         System.out.println("Подзадача создана: " + subtask.getId());
     }
 
@@ -167,16 +167,16 @@ public class Main {
 // CHECKSTYLE:OFF
     private static void runTests() {
         System.out.println("Запуск теста...");
-
+        
         taskManager.createTask("Задача 1", "Описание задачи 1", Duration.ofMinutes(30), LocalDateTime.now());
         taskManager.createTask("Задача 2", "Описание задачи 2", Duration.ofMinutes(30), LocalDateTime.now());
 
         taskManager.createEpic("Эпик 1", "Описание эпика 1");
         taskManager.createEpic("Эпик 2", "Описание эпика 2");
 
-        taskManager.createSubtask("Подзадача 1", "Описание подзадачи 1", 1);
-        taskManager.createSubtask("Подзадача 2", "Описание подзадачи 2", 1);
-        taskManager.createSubtask("Подзадача 3", "Описание подзадачи 3", 2);
+        taskManager.createSubtask("Подзадача 1", "Описание подзадачи 1", 1, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(10));
+        taskManager.createSubtask("Подзадача 2", "Описание подзадачи 2", 1, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(10));
+        taskManager.createSubtask("Подзадача 3", "Описание подзадачи 3", 2, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(10));
 
         System.out.println("Все задачи:");
         printAllTasks();
