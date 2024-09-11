@@ -28,16 +28,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String taskToString(Task task) {
-        TaskType type = task instanceof Epic ? TaskType.EPIC :
-                task instanceof Subtask ? TaskType.SUBTASK :
-                        TaskType.TASK;
+        TaskType type;
+        switch (task) {
+            case Epic epic -> type = TaskType.EPIC;
+            case Subtask subtask -> type = TaskType.SUBTASK;
+            default -> type = TaskType.TASK;
+        }
         return String.format("%d,%s,%s,%s,%s,%s\n",
                 task.getId(),
                 type,
                 task.getName(),
                 task.getStatus(),
                 task.getDescription(),
-                (task instanceof Subtask) ? String.valueOf(((Subtask) task).getEpicId()) : ""
+                (type == TaskType.SUBTASK) ? String.valueOf(((Subtask) task).getEpicId()) : ""
         );
     }
 
