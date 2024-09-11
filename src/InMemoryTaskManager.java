@@ -80,6 +80,7 @@ public class InMemoryTaskManager implements TaskManager {
             throw new IllegalArgumentException("Эпик с id " + epicId + " не найден.");
         }
         epic.addSubtask(id);
+        epic.updateStatus(getSubtasksOfEpic(epicId));
         updateEpicStatus(epicId);
 
         return subtask;
