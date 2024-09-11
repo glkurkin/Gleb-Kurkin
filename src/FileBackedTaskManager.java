@@ -74,6 +74,50 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return manager;
     }
 
+    private static Task parseTask(String[] parts) {
+        if (parts.length < 5) {
+            throw new IllegalArgumentException("Неправильный формат данных для Task. Ожидалось как минимум 5 полей, но получено: " + parts.length);
+        }
+        int taskId = Integer.parseInt(parts[0]);
+        String taskName = parts[2];
+        TaskStatus taskStatus = TaskStatus.valueOf(parts[3]);
+        String taskDescription = parts[4];
+        Duration taskDuration = (parts.length > 5 && !parts[5].isEmpty())
+                ? Duration.ofMinutes(Long.parseLong(parts[5]))
+                : Duration.ZERO;
+        LocalDateTime taskStartTime = (parts.length > 6 && !parts[6].isEmpty())
+                ? LocalDateTime.parse(parts[6])
+                : LocalDateTime.now();
+        return new Task(taskId, taskName, taskDescription, taskStatus, taskDuration, taskStartTime);
+    }
+
+    private static Epic parseEpic(String[] parts) {
+        if (parts.length < 5) {
+            throw new IllegalArgumentException("Неправильный формат данных для Epic. Ожидалось 5 полей, но получено: " + parts.length);
+        }
+        int epicId = Integer.parseInt(parts[0]);
+        String epicName = parts[2];
+        String epicDescription = parts[4];
+        return new Epic(epicId, epicName, epicDescription);
+    }
+
+    private static Subtask parseSubtask(String[] parts) {
+        if (parts.length < 8) {
+            throw new IllegalArgumentException("Неправильный формат данных для Subtask. Ожидалось 8 полей, но получено: " + parts.length);
+        }
+        int subtaskId = Integer.parseInt(parts[0]);
+        String subtaskName = parts[2];
+        TaskStatus subtaskStatus = TaskStatus.valueOf(parts[3]);
+        String subtaskDescription = parts[4];
+        Duration subtaskDuration = (parts.length > 5 && !parts[5].isEmpty())
+                ? Duration.ofMinutes(Long.parseLong(parts[5]))
+                : Duration.ZERO;
+        LocalDateTime subtaskStartTime = (parts.length > 6 && !parts[6].isEmpty())
+                ? LocalDateTime.parse(parts[6])
+                : LocalDateTime.now();
+        int subtaskEpicId = Integer.parseInt(parts[7]);
+        return new Subtask(subtaskId, subtaskName, subtaskDescription, subtaskStatus, subtaskEpicId, subtaskDuration, subtaskStartTime);
+    }
 
 
     private static Task fromString(String value) {
@@ -83,47 +127,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         switch (type) {
             case TASK:
-                if (parts.length < 5) {
-                    throw new IllegalArgumentException("Неправильный формат данных для Task. Ожидалось как минимум 5 полей, но получено: " + parts.length);
-                }
-                int taskId = Integer.parseInt(parts[0]);
-                String taskName = parts[2];
-                TaskStatus taskStatus = TaskStatus.valueOf(parts[3]);
-                String taskDescription = parts[4];
-                Duration taskDuration = (parts.length > 5 && !parts[5].isEmpty())
-                        ? Duration.ofMinutes(Long.parseLong(parts[5]))
-                        : Duration.ZERO;
-                LocalDateTime taskStartTime = (parts.length > 6 && !parts[6].isEmpty())
-                        ? LocalDateTime.parse(parts[6])
-                        : LocalDateTime.now();
-                return new Task(taskId, taskName, taskDescription, taskStatus, taskDuration, taskStartTime);
-
+                return parseTask(parts);
             case EPIC:
-                if (parts.length < 5) {
-                    throw new IllegalArgumentException("Неправильный формат данных для Epic. Ожидалось 5 полей, но получено: " + parts.length);
-                }
-                int epicId = Integer.parseInt(parts[0]);
-                String epicName = parts[2];
-                String epicDescription = parts[4];
-                return new Epic(epicId, epicName, epicDescription);
-
+                return parseEpic(parts);
             case SUBTASK:
-                if (parts.length < 8) {
-                    throw new IllegalArgumentException("Неправильный формат данных для Subtask. Ожидалось 8 полей, но получено: " + parts.length);
-                }
-                int subtaskId = Integer.parseInt(parts[0]);
-                String subtaskName = parts[2];
-                TaskStatus subtaskStatus = TaskStatus.valueOf(parts[3]);
-                String subtaskDescription = parts[4];
-                Duration subtaskDuration = (parts.length > 5 && !parts[5].isEmpty())
-                        ? Duration.ofMinutes(Long.parseLong(parts[5]))
-                        : Duration.ZERO;
-                LocalDateTime subtaskStartTime = (parts.length > 6 && !parts[6].isEmpty())
-                        ? LocalDateTime.parse(parts[6])
-                        : LocalDateTime.now();
-                int subtaskEpicId = Integer.parseInt(parts[7]);
-                return new Subtask(subtaskId, subtaskName, subtaskDescription, subtaskStatus, subtaskEpicId, subtaskDuration, subtaskStartTime);
-
+                return parseSubtask(parts);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
         }
