@@ -8,9 +8,9 @@ import java.util.List;
 
 
 public class InMemoryTaskManager implements TaskManager {
-    protected Map<Integer, Task> tasks;
-    protected Map<Integer, Epic> epics;
-    protected Map<Integer, Subtask> subtasks;
+    private Map<Integer, Task> tasks;
+    private Map<Integer, Epic> epics;
+    private Map<Integer, Subtask> subtasks;
     private int id;
     private HistoryManager historyManager;
     private TreeSet<Task> prioritizedTasks;
@@ -265,7 +265,29 @@ public class InMemoryTaskManager implements TaskManager {
         return TaskStatus.IN_PROGRESS;
     }
 
+    public Map<Integer, Task> getTasks() {
+        return tasks;
+    }
 
+    public void setTasks(Map<Integer, Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public Map<Integer, Epic> getEpics() {
+        return epics;
+    }
+
+    public void setEpics(Map<Integer, Epic> epics) {
+        this.epics = epics;
+    }
+
+    public Map<Integer, Subtask> getSubtasks() {
+        return subtasks;
+    }
+
+    public void setSubtasks(Map<Integer, Subtask> subtasks) {
+        this.subtasks = subtasks;
+    }
 
     public void addTask(Task task) {
         tasks.put(task.getId(), task);
