@@ -13,11 +13,5 @@ public class ExceptionHandlingTest {
             FileBackedTaskManager.loadFromFile(new File("неверный_путь.csv"));
         });
     }
-
-    @Test
-    public void testArithmeticException() {
-        assertThrows(ArithmeticException.class, () -> {
-            int result = 10 / 0;
-        });
-    }
+    
 }
