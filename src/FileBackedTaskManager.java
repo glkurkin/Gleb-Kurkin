@@ -55,12 +55,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Task task = fromString(line);
 
                     if (task instanceof Epic) {
-                        manager.epics.put(task.getId(), (Epic) task);
+                        manager.getEpics().put(task.getId(), (Epic) task);
                     } else if (task instanceof Subtask) {
-                        manager.subtasks.put(task.getId(), (Subtask) task);
+                        manager.getSubtasks().put(task.getId(), (Subtask) task);
                         manager.updateEpicStatus(((Subtask) task).getEpicId());
                     } else {
-                        manager.tasks.put(task.getId(), task);
+                        manager.getTasks().put(task.getId(), task);
                     }
                 } catch (IllegalArgumentException e) {
                     System.err.println("Ошибка разбора строки: " + line + ". Пропуск задачи.");
