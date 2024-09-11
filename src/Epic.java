@@ -7,8 +7,12 @@ public class Epic extends Task {
     private List<Integer> subtaskIds;
     private LocalDateTime endTime;
 
+    private static final Duration DEFAULT_EPIC_DURATION = Duration.ofMinutes(60);
+    private static final long DEFAULT_START_TIME_OFFSET_MINUTES = 15;
+
     public Epic(int id, String name, String description) {
-        super(id, name, description, TaskStatus.NEW, Duration.ofMinutes(60), LocalDateTime.now().plusMinutes(15));
+        super(id, name, description, TaskStatus.NEW, DEFAULT_EPIC_DURATION,
+                LocalDateTime.now().plusMinutes(DEFAULT_START_TIME_OFFSET_MINUTES));
         this.subtaskIds = new ArrayList<>();
     }
 
