@@ -1,6 +1,10 @@
 package server;
 
 import com.sun.net.httpserver.HttpServer;
+import handlers.TaskHandler;
+import managers.InMemoryTaskManager;
+import managers.TaskManager;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -15,6 +19,8 @@ public class HttpTaskServer {
     public void start() {
         server.start();
         System.out.println("HTTP сервер запущен на порту " + PORT);
+        TaskManager taskManager = new InMemoryTaskManager();
+        server.createContext("/tasks", new TaskHandler(taskManager));
     }
 
     public void stop() {
