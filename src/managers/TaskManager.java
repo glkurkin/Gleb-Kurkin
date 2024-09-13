@@ -8,6 +8,7 @@ import tasks.TaskStatus;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     Task createTask(String name, String description, Duration duration, LocalDateTime now);
@@ -37,4 +38,5 @@ public interface TaskManager {
 
     TaskStatus getEpicStatus(int id);
 
+    Map<Integer, Task> getTasks();
 }
