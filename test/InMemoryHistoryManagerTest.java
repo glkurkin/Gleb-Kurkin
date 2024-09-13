@@ -1,5 +1,9 @@
+import managers.HistoryManager;
+import managers.InMemoryHistoryManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import tasks.Task;
+import tasks.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

@@ -1,3 +1,7 @@
+package utils;
+
+import tasks.Task;
+
 import java.util.Comparator;
 
 public class TaskStartTimeComparator implements Comparator<Task> {

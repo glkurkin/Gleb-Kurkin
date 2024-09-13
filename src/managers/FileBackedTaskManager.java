@@ -1,3 +1,8 @@
+package managers;
+import exeptions.FileLoadException;
+import exeptions.FileSaveException;
+import tasks.*;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -16,7 +21,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static final String FILE_HEADER = "id,type,name,status,description,epic\n";
 
-    protected void save() {
+    public void save() {
         try (Writer writer = new FileWriter(file)) {
             writer.write(FILE_HEADER);
             for (Task task : getAllTasks()) {
@@ -76,7 +81,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static Task parseTask(String[] parts) {
         if (parts.length < 5) {
-            throw new IllegalArgumentException("Неправильный формат данных для Task. Ожидалось как минимум 5 полей, но получено: " + parts.length);
+            throw new IllegalArgumentException("Неправильный формат данных для tasks.Task. Ожидалось как минимум 5 полей, но получено: " + parts.length);
         }
         int taskId = Integer.parseInt(parts[0]);
         String taskName = parts[2];
@@ -93,7 +98,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static Epic parseEpic(String[] parts) {
         if (parts.length < 5) {
-            throw new IllegalArgumentException("Неправильный формат данных для Epic. Ожидалось 5 полей, но получено: " + parts.length);
+            throw new IllegalArgumentException("Неправильный формат данных для tasks.Epic. Ожидалось 5 полей, но получено: " + parts.length);
         }
         int epicId = Integer.parseInt(parts[0]);
         String epicName = parts[2];
@@ -103,7 +108,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private static Subtask parseSubtask(String[] parts) {
         if (parts.length < 8) {
-            throw new IllegalArgumentException("Неправильный формат данных для Subtask. Ожидалось 8 полей, но получено: " + parts.length);
+            throw new IllegalArgumentException("Неправильный формат данных для tasks.Subtask. Ожидалось 8 полей, но получено: " + parts.length);
         }
         int subtaskId = Integer.parseInt(parts[0]);
         String subtaskName = parts[2];
@@ -126,11 +131,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         TaskType type = TaskType.valueOf(parts[1]);
 
         switch (type) {
-            case TASK:
+            case TaskType.TASK:
                 return parseTask(parts);
-            case EPIC:
+            case TaskType.EPIC:
                 return parseEpic(parts);
-            case SUBTASK:
+            case TaskType.SUBTASK:
                 return parseSubtask(parts);
             default:
                 throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
