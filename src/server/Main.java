@@ -19,6 +19,7 @@ public class Main {
     public static TaskManager getTaskManager() {
         return taskManager;
     }
+    
     public static void main(String[] args) {
         runTests();
 
