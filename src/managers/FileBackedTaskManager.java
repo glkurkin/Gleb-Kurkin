@@ -103,7 +103,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int epicId = Integer.parseInt(parts[0]);
         String epicName = parts[2];
         String epicDescription = parts[4];
-        return new Epic(epicId, epicName, epicDescription);
+        return new Epic(epicId, epicName, epicDescription, TaskStatus.NEW);
     }
 
     private static Subtask parseSubtask(String[] parts) {

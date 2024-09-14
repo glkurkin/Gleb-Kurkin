@@ -70,7 +70,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic createEpic(String name, String description) {
         int id = this.id++;
-        Epic epic = new Epic(id, name, description);
+        Epic epic = new Epic(id, name, description, TaskStatus.NEW);
         epics.put(id, epic);
         return epic;
     }
@@ -100,7 +100,6 @@ public class InMemoryTaskManager implements TaskManager {
 
         return subtask;
     }
-
 
 
     @Override
@@ -163,7 +162,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return task;
     }
-
 
 
     @Override
@@ -345,6 +343,41 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Set<Task> getPrioritizedTasks() {
         return new TreeSet<>(prioritizedTasks);
+    }
+
+    @Override
+    public void deleteTaskById(int id) {
+
+    }
+
+    @Override
+    public void deleteEpicById(int id) {
+
+    }
+
+    @Override
+    public Epic getEpicById(int id) {
+        return null;
+    }
+
+    @Override
+    public void updateEpic(Epic updatedEpic) {
+
+    }
+
+    @Override
+    public void deleteSubtaskById(int id) {
+
+    }
+
+    @Override
+    public Subtask getSubtaskById(int id) {
+        return null;
+    }
+
+    @Override
+    public void updateSubtask(Subtask updatedSubtask) {
+
     }
 
     public void printAllTasks() {

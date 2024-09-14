@@ -60,4 +60,18 @@ public interface TaskManager {
     void deleteEpics();
 
     Set<Task> getPrioritizedTasks();
+
+    void deleteTaskById(int id);
+
+    void deleteEpicById(int id);
+
+    Epic getEpicById(int id);
+
+    void updateEpic(Epic updatedEpic);
+
+    void deleteSubtaskById(int id);
+
+    Subtask getSubtaskById(int id);
+
+    void updateSubtask(Subtask updatedSubtask);
 }
