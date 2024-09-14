@@ -54,7 +54,7 @@ public interface TaskManager {
     void createSubtask(Subtask subtask);
 
     public Map<Integer, Epic> getEpics();
-    
+
     void createEpic(Epic epic);
 
     void deleteEpics();
