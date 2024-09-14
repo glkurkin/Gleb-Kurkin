@@ -283,6 +283,21 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks;
     }
 
+    @Override
+    public void createTask(Task task) {
+
+    }
+
+    @Override
+    public void updateTask(Task task) {
+
+    }
+
+    @Override
+    public void deleteTasks() {
+
+    }
+
     public void setTasks(Map<Integer, Task> tasks) {
         this.tasks = tasks;
     }
@@ -291,12 +306,32 @@ public class InMemoryTaskManager implements TaskManager {
         return epics;
     }
 
+    @Override
+    public void createEpic(Epic epic) {
+
+    }
+
+    @Override
+    public void deleteEpics() {
+
+    }
+
     public void setEpics(Map<Integer, Epic> epics) {
         this.epics = epics;
     }
 
     public Map<Integer, Subtask> getSubtasks() {
         return subtasks;
+    }
+
+    @Override
+    public void deleteSubtasks() {
+
+    }
+
+    @Override
+    public void createSubtask(Subtask subtask) {
+
     }
 
     public void setSubtasks(Map<Integer, Subtask> subtasks) {

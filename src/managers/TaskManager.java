@@ -9,6 +9,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface TaskManager {
     Task createTask(String name, String description, Duration duration, LocalDateTime now);
@@ -39,4 +40,24 @@ public interface TaskManager {
     TaskStatus getEpicStatus(int id);
 
     Map<Integer, Task> getTasks();
+
+    void createTask(Task task);
+
+    void updateTask(Task task);
+
+    void deleteTasks();
+
+    Map<Integer, Subtask> getSubtasks();
+
+    void deleteSubtasks();
+
+    void createSubtask(Subtask subtask);
+
+    public Map<Integer, Epic> getEpics();
+    
+    void createEpic(Epic epic);
+
+    void deleteEpics();
+
+    Set<Task> getPrioritizedTasks();
 }

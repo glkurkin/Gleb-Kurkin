@@ -16,6 +16,9 @@ public class Main {
     private static TaskManager taskManager = Managers.getDefault();
     private static Scanner scanner = new Scanner(System.in);
 
+    public static TaskManager getTaskManager() {
+        return taskManager;
+    }
     public static void main(String[] args) {
         runTests();
 

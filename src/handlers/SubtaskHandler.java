@@ -1,62 +1,63 @@
 package handlers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import managers.TaskManager;
+import tasks.Subtask;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import tasks.Task;
-import managers.TaskManager;
-
-public class TaskHandler extends BaseHttpHandler {
+public class SubtaskHandler implements HttpHandler {
     private final TaskManager taskManager;
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public TaskHandler(TaskManager taskManager) {
+    public SubtaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
+
         switch (method) {
             case "GET":
-                handleGetTasks(exchange);
+                handleGetSubtasks(exchange);
                 break;
             case "POST":
-                handlePostTask(exchange);
+                handlePostSubtask(exchange);
                 break;
             case "DELETE":
-                handleDeleteTasks(exchange);
+                handleDeleteSubtasks(exchange);
                 break;
             default:
-                sendNotFound(exchange);
+                sendResponse(exchange, "Метод не поддерживается", 405);
                 break;
         }
     }
 
-    private void handleGetTasks(HttpExchange exchange) throws IOException {
-        Map<Integer, Task> tasks = taskManager.getTasks();
-        String response = gson.toJson(tasks);
-        sendText(exchange, response);
+    private void handleGetSubtasks(HttpExchange exchange) throws IOException {
+        List<Subtask> subtasks = (List<Subtask>) taskManager.getSubtasks();
+        String response = gson.toJson(subtasks);
+        sendResponse(exchange, response, 200);
     }
 
-    private void handlePostTask(HttpExchange exchange) throws IOException {
+    private void handlePostSubtask(HttpExchange exchange) throws IOException {
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
 
-        Task task = gson.fromJson(body, Task.class);
-        taskManager.createTask(task);
-        sendResponse(exchange, gson.toJson(task), 201);
+        Subtask subtask = gson.fromJson(body, Subtask.class);
+        taskManager.createSubtask(subtask);
+        sendResponse(exchange, gson.toJson(subtask), 201);
     }
 
-    private void handleDeleteTasks(HttpExchange exchange) throws IOException {
-        taskManager.deleteTasks();
+    private void handleDeleteSubtasks(HttpExchange exchange) throws IOException {
+        taskManager.deleteSubtasks();
         sendResponse(exchange, "", 200);
     }
 
@@ -69,6 +70,3 @@ public class TaskHandler extends BaseHttpHandler {
         os.close();
     }
 }
-
-
-
